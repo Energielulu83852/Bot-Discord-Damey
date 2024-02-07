@@ -74,7 +74,7 @@ async def on_member_remove(member):
         await channel.send(embed=embed)
 
 # Logs
-"""
+
 @bot.event
 async def on_member_update(before, after):
     if before.nick != after.nick:
@@ -89,7 +89,7 @@ async def on_member_update(before, after):
                 embed = discord.Embed(title="Changement de Pseudo", description=f"{after.mention} à changé de pseudo : {before.mention} -> {after.nick}", color=0x808080)
                 embed.set_author(name="Logs", icon_url="https://cdn.discordapp.com/avatars/847534646047932437/e192ce9e720500030d988d3f9ee1a951.png")
                 await channel.send(embed=embed)
-"""
+
 # Commandes Slash Administration
 
 @bot.tree.command(name='add_role', description='Ajouter un rôle à un membre.')
