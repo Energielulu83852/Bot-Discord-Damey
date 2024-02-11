@@ -13,16 +13,17 @@ service_effectif=0
 
 #ID des channels de diffusion
 
-channel_pds_fds = "📍・pds-fds" #Définir le channel de prise de service
+channel_pds_fds = "📍・pds-fds-statut" #Définir le channel de prise de service
 channel_airport_arrival = "🛬・𝖡ienvenu" #Définir le salon d'annonce d'arrivé
 channel_airport_departure = "👋・𝖣éparts" #Définir le salon d'annonce des départs
 #channel_logs_roles = 926610730080411720 #Définir le salon des logs (Modifiaction Rôles Membres)
 channel_facture = "💵・facture" #Définir le salon des factures
 server_taxi = 1187497813895032902 # Définir l'ID du serveur Taxi
 espacesperso_cat = "Espace perso" # Définir le nom de la catégorie où seront les espaces personnels
-name_staff = "Staff" # Définir le nom du rôle Staff
-candid_cat = "Candidature" # Définir le nom de la catégorie où seront les candidatures
-help_cat = "Tickets Aide" # Définir le nom de la catégorie où seront les tickets d'aide
+name_staff = "➖Direction➖" # Définir le nom du rôle Staff
+candid_cat = "Equipe du taxi" # Définir le nom de la catégorie où seront les candidatures
+help_cat = "Equipe du taxi" # Définir le nom de la catégorie où seront les tickets d'aide
+role_service = "✅・En Service"
 
 
 
@@ -74,7 +75,7 @@ async def on_member_remove(member):
         await channel.send(embed=embed)
 
 # Logs
-
+"""
 @bot.event
 async def on_member_update(before, after):
     if before.nick != after.nick:
@@ -89,7 +90,7 @@ async def on_member_update(before, after):
                 embed = discord.Embed(title="Changement de Pseudo", description=f"{after.mention} à changé de pseudo : {before.mention} -> {after.nick}", color=0x808080)
                 embed.set_author(name="Logs", icon_url="https://cdn.discordapp.com/avatars/847534646047932437/e192ce9e720500030d988d3f9ee1a951.png")
                 await channel.send(embed=embed)
-
+"""
 # Commandes Slash Administration
 
 @bot.tree.command(name='add_role', description='Ajouter un rôle à un membre.')
@@ -185,7 +186,7 @@ async def unban(interaction: discord.Interaction, member: discord.Member, reason
 @commands.check(guild_only)
 async def pds(interaction: discord.Interaction):
     global channel_pds_fds
-    role = discord.utils.get(interaction.user.guild.roles, name=on_service)
+    role = discord.utils.get(interaction.user.guild.roles, name=role_service)
     guild = interaction.guild
     channel = discord.utils.get(guild.channels, name=channel_pds_fds)
     if role not in interaction.user.roles:
@@ -203,7 +204,7 @@ async def pds(interaction: discord.Interaction):
 @commands.check(guild_only)
 async def fds(interaction: discord.Interaction):
     global channel_pds_fds
-    role = discord.utils.get(interaction.user.guild.roles, name=on_service)
+    role = discord.utils.get(interaction.user.guild.roles, name=role_service)
     guild = interaction.guild
     channel = discord.utils.get(guild.channels, name=channel_pds_fds)
 
@@ -229,7 +230,7 @@ async def fds(interaction: discord.Interaction):
 @bot.tree.command(name="service", description="Effectif en service.")
 @commands.check(guild_only)
 async def service(interaction: discord.Interaction):
-    role = discord.utils.get(interaction.guild.roles, name=on_service)
+    role = discord.utils.get(interaction.guild.roles, name=role_service)
 
     if role:
         nombre_membres_en_service = len(role.members)
@@ -312,9 +313,11 @@ class Tickets_rec(discord.ui.View):
         await channel.send(f"Merci {interaction.user.mention} pour ton intérêt à notre société, un membre du {role.mention} va te répondre dans quelque instants.", view=Tickets_close())
 @bot.command()
 async def recrutement(ctx):
-    embed = discord.Embed(title="Candidature", description=f"Clique sur le bouton pour déposer une candidature. __**Tout abus sera puni**__", color=0xffff00)
-    embed.set_footer(text='La Direction')
+    embed = discord.Embed(title="DownTown Cab Co - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Oubliez pas de remplir le formulaire avant.*__", color=0xffff00)
+    embed.set_footer(text="L'équipe du DownTown Cab Co.")
     embed.set_image(url='https://i.imgur.com/N6JFXaA.jpg')
+    embed.add_field(name="État des recrutuments", value="🟢 Actuellements ouverts.", inline=False)
+    embed.add_field(name="Lien du formulaire", value="https://docs.google.com/forms/d/e/1FAIpQLSckEXklFZcd2Ctj5ZgCcJFFY8nWSgYjP8Fz0DTv9EgA-dv9hg/viewform?usp=sharing", inline=False)
     await ctx.send(embed=embed, view=Tickets_rec())
 
 # Système de Tickets - Aide
@@ -361,7 +364,7 @@ class PDS_FDS(discord.ui.View):
   @discord.ui.button(label="✅ - Prendre son service", style=discord.ButtonStyle.green, custom_id="on_service")
   async def button1(self, interaction: discord.Interaction, button: discord.ui.Button):
             global channel_pds_fds
-            role = discord.utils.get(interaction.user.guild.roles, name="En Service")
+            role = discord.utils.get(interaction.user.guild.roles, name=role_service)
             guild = interaction.guild
             channel = discord.utils.get(guild.channels, name=channel_pds_fds)
             if role not in interaction.user.roles:
@@ -377,7 +380,7 @@ class PDS_FDS(discord.ui.View):
   @discord.ui.button(label="❌ - Prendre sa fin de service", style=discord.ButtonStyle.red, custom_id="out_service")
   async def button2(self, interaction: discord.Interaction, button: discord.ui.Button):
         global channel_pds_fds
-        role = discord.utils.get(interaction.user.guild.roles, name="En Service")
+        role = discord.utils.get(interaction.user.guild.roles, name=role_service)
         guild = interaction.guild
         channel = discord.utils.get(guild.channels, name=channel_pds_fds)
 
