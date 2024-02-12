@@ -3,6 +3,7 @@ from discord.ext import commands
 from datetime import datetime
 import asyncio
 from discord import app_commands
+import pytz
 
 
 intents = discord.Intents.all()
@@ -370,8 +371,9 @@ class PDS_FDS(discord.ui.View):
             if role not in interaction.user.roles:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(f"Bon service !", ephemeral=True)
-                service_start_times[interaction.user.id] = datetime.now()
-                current_time = datetime.now().strftime("%H:%M")
+                tz = pytz.timezone('Europe/Paris')
+                service_start_times[interaction.user.id] = datetime.now(tz)
+                current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Prise de service", description=f"Prise de service par {interaction.user.mention}", color=0x4bf542)
                 embed.add_field(name="Heure", value=f"{current_time}")
                 await channel.send(embed=embed)
@@ -390,8 +392,9 @@ class PDS_FDS(discord.ui.View):
 
             if interaction.user.id in service_start_times:
                 service_start_time = service_start_times[interaction.user.id]
-                service_duration = datetime.now() - service_start_time
-                current_time = datetime.now().strftime("%H:%M")
+                tz = pytz.timezone('Europe/Paris')
+                service_duration = datetime.now(tz) - service_start_time
+                current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Fin de service", description=f"Fin de service pris par {interaction.user.mention}", color=0xf54242)
                 embed.add_field(name="Heure", value=f"{current_time}")
                 embed.add_field(name="Temps de service", value=f"{service_duration.total_seconds() // 60} minutes")
