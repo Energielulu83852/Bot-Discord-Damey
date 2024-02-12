@@ -315,7 +315,7 @@ class Tickets_rec(discord.ui.View):
 async def recrutement(ctx):
     embed = discord.Embed(title="DownTown Cab Co - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Oubliez pas de remplir le formulaire avant.*__", color=0xffff00)
     embed.set_footer(text="L'équipe du DownTown Cab Co.")
-    embed.set_image(url='https://i.imgur.com/N6JFXaA.jpg')
+    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     embed.add_field(name="État des recrutuments", value="🟢 Actuellements ouverts.", inline=False)
     embed.add_field(name="Lien du formulaire", value="https://docs.google.com/forms/d/e/1FAIpQLSckEXklFZcd2Ctj5ZgCcJFFY8nWSgYjP8Fz0DTv9EgA-dv9hg/viewform?usp=sharing", inline=False)
     await ctx.send(embed=embed, view=Tickets_rec())
@@ -340,7 +340,7 @@ class Aide(discord.ui.View):
 async def Help(ctx):
     embed = discord.Embed(title="Besoin d'aide", description=f"Clique sur le bouton pour créer un ticket d'aide. __**Tout abus sera puni**__", color=0xe60000)
     embed.set_footer(text='La Direction')
-    embed.set_image(url='https://i.imgur.com/N6JFXaA.jpg')
+    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     await ctx.send(embed=embed, view=Aide())
 
 # Système de Tickets - Fermeture des tickets
@@ -408,7 +408,7 @@ class PDS_FDS(discord.ui.View):
 async def pds_fds(ctx):
     embed = discord.Embed(title="Prises de services", description=f"Annoncer votre début de service ou fin de service à l'aide des boutons. Cela permet d'aider le staff a connaître le nombre d'effectif en service", color=0xffff00)
     embed.set_footer(text='La Direction')
-    embed.set_image(url='https://i.imgur.com/N6JFXaA.jpg')
+    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     await ctx.send(embed = embed, view=PDS_FDS())
 
 bot.run('ODQ3NTM0NjQ2MDQ3OTMyNDM3.GeKzPc.uFXjCtmOZXiOl0jToGZwtIn7zA3hGJYFjABpj0')
