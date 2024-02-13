@@ -244,7 +244,7 @@ async def service(interaction: discord.Interaction):
 
 @bot.tree.command(name="facture", description="Enregistrer une facture.")
 @commands.check(guild_only)
-async def service(interaction: discord.Interaction, photo_url: str, facturation: str):
+async def service(interaction: discord.Interaction, facturation: str, photo_url: str = None):
     guild = interaction.guild
     channel = discord.utils.get(guild.channels, name=channel_facture)
     embed = discord.Embed(title="Factures", description=f"Une nouvelle facture a été déposée !", color=0x4bf542)
