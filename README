@@ -1,6 +1,10 @@
 Ce bot a été entièrement codé par Lucas DE ARAUJO et sous license.
 
-Le préfix est ! et modifiable dès le début du code. Il est représenté sur ce document avec [prefix].
+Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer la ligne suivante : 
+BOT_TOKEN = "votre-token-du-bot"
+
+
+Le préfix est ? et modifiable dès le début du code. Il est représenté sur ce document avec [prefix].
 
 Différentes commandes slash : 
     - Commande BAN (restrinte au administrateurs) -> /ban
