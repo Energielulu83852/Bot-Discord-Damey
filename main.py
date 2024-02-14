@@ -415,4 +415,4 @@ async def pds_fds(ctx):
     embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     await ctx.send(embed = embed, view=PDS_FDS())
 
-bot.run('BOT_TOKEN')
+bot.run(BOT_TOKEN)
