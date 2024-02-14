@@ -13,9 +13,7 @@ Différentes commandes slash :
     - Commande qui fait dire bonjour au bot -> /bonjour
     - Commande de suppression de rôle pour un membre -> /delete_role
     - Commande DM (restrinte au administrateurs) -> /dm
-    - Commande Facture -> /facture 
-    - Commande prise de service -> /pds
-    - Commande fin de service -> /fds
+    - Commande Facture -> /facture
     - Commande ping -> /ping
     - Commande say -> /say
     - Commande service -> /service

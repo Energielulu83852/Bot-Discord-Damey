@@ -1,3 +1,5 @@
+# Sous licence, crée par Lucas DE ARAUJO.
+
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -182,53 +184,8 @@ async def unban(interaction: discord.Interaction, member: discord.Member, reason
     except discord.Forbidden:
         await interaction.response.send_message("Je n'ai pas les permissions nécessaires pour bannir cet utilisateur.", ephemeral=True)
 
-# Commandes Slash prise de service et fin de service
+# Commande Slash statut service
         
-@bot.tree.command(name="pds", description="Signaler une prise de service.")
-@commands.check(guild_only)
-async def pds(interaction: discord.Interaction):
-    global channel_pds_fds
-    role = discord.utils.get(interaction.user.guild.roles, name=role_service)
-    guild = interaction.guild
-    channel = discord.utils.get(guild.channels, name=channel_pds_fds)
-    if role not in interaction.user.roles:
-        await interaction.user.add_roles(role)
-        await interaction.response.send_message(f"Bon service !", ephemeral=True)
-        service_start_times[interaction.user.id] = datetime.now()
-        current_time = datetime.now().strftime("%H:%M")
-        embed = discord.Embed(title="Prise de service", description=f"Prise de service par {interaction.user.mention}", color=0x4bf542)
-        embed.add_field(name="Heure", value=f"{current_time}")
-        await channel.send(embed=embed)
-    else:
-        await interaction.response.send_message(f"Vous êtes déjà en service.", ephemeral=True)
-
-@bot.tree.command(name="fds", description="Signaler une fin de service.")
-@commands.check(guild_only)
-async def fds(interaction: discord.Interaction):
-    global channel_pds_fds
-    role = discord.utils.get(interaction.user.guild.roles, name=role_service)
-    guild = interaction.guild
-    channel = discord.utils.get(guild.channels, name=channel_pds_fds)
-
-    if role in interaction.user.roles:
-        await interaction.user.remove_roles(role)
-        await interaction.response.send_message(f"Fin de service confirmé !", ephemeral=True)
-
-        if interaction.user.id in service_start_times:
-            service_start_time = service_start_times[interaction.user.id]
-            service_duration = datetime.now() - service_start_time
-            current_time = datetime.now().strftime("%H:%M")
-            embed1 = discord.Embed(title="Fin de service", description=f"Fin de service pris par {interaction.user.mention}", color=0xf54242)
-            embed1.add_field(name="Heure", value=f"{current_time}")
-            embed1.add_field(name="Temps de service", value=f"{service_duration.total_seconds() // 60} minutes")
-            await channel.send(embed=embed1)
-            del service_start_times[interaction.user.id]
-        else:
-            await channel.send(f'{interaction.user.mention} prend sa fin de service à {datetime.now().strftime("%H:%M")}.')
-
-    else:
-        await interaction.response.send_message(f"Vous n'êtes pas en service.", ephemeral=True)
-
 @bot.tree.command(name="service", description="Effectif en service.")
 @commands.check(guild_only)
 async def service(interaction: discord.Interaction):
