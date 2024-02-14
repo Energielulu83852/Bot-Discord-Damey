@@ -4,6 +4,7 @@ from datetime import datetime
 import asyncio
 from discord import app_commands
 import pytz
+from config import BOT_TOKEN
 
 
 intents = discord.Intents.all()
@@ -414,4 +415,4 @@ async def pds_fds(ctx):
     embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     await ctx.send(embed = embed, view=PDS_FDS())
 
-bot.run('ODQ3NTM0NjQ2MDQ3OTMyNDM3.GeKzPc.uFXjCtmOZXiOl0jToGZwtIn7zA3hGJYFjABpj0')
+bot.run('BOT_TOKEN')
