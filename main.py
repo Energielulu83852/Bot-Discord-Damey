@@ -262,14 +262,44 @@ class Tickets_rec(discord.ui.View):
 
     @discord.ui.button(label="🗃️ - Déposer une candidature", style=discord.ButtonStyle.green, custom_id="recrutement")
     async def button1(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(RecrutementForm())
+
+class RecrutementForm(discord.ui.Modal, title="Recrutement - Informations"):
+    rm_name = discord.ui.TextInput(
+        style=discord.TextStyle.short,
+        label = "Nom - Prénom RP",
+        required= True,
+        placeholder="Nom et Prénom dans le jeu"
+    )
+    rm_age = discord.ui.TextInput(
+        style=discord.TextStyle.short,
+        label = "Age",
+        required= True,
+        placeholder="Votre âge IRL"
+    )
+    rm_motivations = discord.ui.TextInput(
+        style=discord.TextStyle.long,
+        label = "Motivations",
+        required= True,
+        max_length=500,
+        placeholder="Donnez vos motivations"
+    )
+
+    async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f"Votre ticket de candidature a été ouvert.", ephemeral=True)
         position = discord.utils.get(interaction.guild.categories, name=candid_cat) 
         channel = await interaction.guild.create_text_channel(f"🪪・{interaction.user.name}-Candidature", category=position)
         role = discord.utils.get(interaction.guild.roles, name=name_staff)
         await channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
         await channel.set_permissions(interaction.guild.default_role, read_messages=False, send_messages=False)
-        await interaction.response.send_message(f"Votre ticket de candidature a été ouvert <#{channel.id}>.", ephemeral=True)
         await asyncio.sleep(2)
-        await channel.send(f"Merci {interaction.user.mention} pour ton intérêt à notre société, un membre du {role.mention} va te répondre dans quelque instants.", view=Tickets_close())
+        embed = discord.Embed(title=f"Informations de : {interaction.user.name}", color=0x3366ff)
+        embed.add_field(name="・Nom - Prénom RP", value=f"`{self.rm_name.value}`", inline=False)
+        embed.add_field(name="・Age IRL", value=f"`{self.rm_age.value}`", inline=False)
+        embed.add_field(name="・Motivations", value=f"`{self.rm_motivations.value}`", inline=False)
+        await channel.send(f"Merci {interaction.user.mention} pour ton intérêt à notre société, un membre du {role.mention} va te répondre dans quelque instants.", embed=embed, view=Tickets_close())
+
+
 @bot.command()
 async def recrutement(ctx):
     embed = discord.Embed(title="DownTown Cab Co - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Oubliez pas de remplir le formulaire avant.*__", color=0xffff00)
