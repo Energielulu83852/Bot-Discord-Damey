@@ -8,6 +8,19 @@ Discord.py, pytz, datetime et asyncio
 Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer la ligne suivante : 
 ```
 BOT_TOKEN = "votre-token-du-bot"
+main_color = couleur_principale_de_votre_bot
+ban_color = couleur_des_embeds_de_bannissement
+unban_color = couleurs_des_embeds_de_débannissement
+role_client = "role_client_du_serveur"
+channel_pds_fds = "salons_des_status_des_pds_fds"
+channel_airport_arrival = "salon_d'annonce_arrivee_membre"
+channel_airport_departure = "salon_d'annonce_depart_membre"
+channel_facture = "salon_des_factures"
+espacesperso_cat = "salon_de_la_categorie_espace_perso"
+name_staff = "nom_role_staff"
+candid_cat = "nom_categorie_candidature"
+help_cat = "nom_categorie_candidature"
+role_service = "nom_role_service" 
 ```
 Ainsi que d'installer les dépendances avec :
 ```

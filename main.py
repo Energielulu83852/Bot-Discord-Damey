@@ -1,11 +1,9 @@
-# Sous licence, crée par Lucas DE ARAUJO.
-
 import discord
 from discord.ext import commands
 from datetime import datetime
 import asyncio
 import pytz
-from config import BOT_TOKEN
+from config import BOT_TOKEN, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
@@ -14,26 +12,6 @@ bot = commands.Bot(command_prefix = "?",intents=intents)
 service_start_times = {}
 service_effectif=0
 
-#ID des channels de diffusion
-
-channel_pds_fds = "📍・pds-fds-statut" #Définir le channel de prise de service
-channel_airport_arrival = "🛬・𝖡ienvenu" #Définir le salon d'annonce d'arrivé
-channel_airport_departure = "👋・𝖣éparts" #Définir le salon d'annonce des départs
-#channel_logs_roles = 926610730080411720 #Définir le salon des logs (Modifiaction Rôles Membres)
-channel_facture = "💵・facture" #Définir le salon des factures
-server_taxi = 1187497813895032902 # Définir l'ID du serveur Taxi
-espacesperso_cat = "Espace perso" # Définir le nom de la catégorie où seront les espaces personnels
-name_staff = "➖Direction➖" # Définir le nom du rôle Staff
-candid_cat = "Equipe du taxi" # Définir le nom de la catégorie où seront les candidatures
-help_cat = "Equipe du taxi" # Définir le nom de la catégorie où seront les tickets d'aide
-role_service = "✅・En Service"
-
-
-
-# Limiter commande à un serveur en particulier
-
-def guild_only(ctx):
-    return ctx.guild and ctx.guild.id == server_taxi
 
 # Définition statut Bot
 
@@ -54,7 +32,6 @@ async def on_ready():
 # Annonces arrivées / départs membres
 
 @bot.event
-@commands.check(guild_only)
 async def on_member_join(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, name=channel_airport_arrival)
@@ -63,12 +40,11 @@ async def on_member_join(member):
         embed = discord.Embed(title="Un nouveau membre est arrivé !", description=f"Bienvenu {member.name} sur le discord du Taxi | VitaLife 🚕", color=0x999999)
         embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
         await channel.send(embed=embed)
-    roles = discord.utils.get(member.guild.roles, name="Client")
+    roles = discord.utils.get(member.guild.roles, name=role_client)
     if roles is not None:
         await member.add_roles(roles)
 
 @bot.event
-@commands.check(guild_only)
 async def on_member_remove(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, name=channel_airport_departure)
@@ -77,32 +53,19 @@ async def on_member_remove(member):
         embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
         await channel.send(embed=embed)
 
-# Logs
-"""
-@bot.event
-async def on_member_update(before, after):
-    if before.nick != after.nick:
-        channel = bot.get_channel(channel_logs_roles)
-        if before.nick != None:
-            if channel:
-                embed = discord.Embed(title="Changement de Pseudo", description=f"{after.mention} à changé de pseudo : {before.nick} -> {after.mention}", color=0x808080)
-                embed.set_author(name="Logs", icon_url="https://cdn.discordapp.com/avatars/847534646047932437/e192ce9e720500030d988d3f9ee1a951.png")
-                await channel.send(embed=embed)
-        else:
-            if channel:
-                embed = discord.Embed(title="Changement de Pseudo", description=f"{after.mention} à changé de pseudo : {before.mention} -> {after.nick}", color=0x808080)
-                embed.set_author(name="Logs", icon_url="https://cdn.discordapp.com/avatars/847534646047932437/e192ce9e720500030d988d3f9ee1a951.png")
-                await channel.send(embed=embed)
-"""
 # Commandes Slash Administration
 
 @bot.tree.command(name='add_role', description='Ajouter un rôle à un membre.')
+@discord.app_commands.describe(member = "Pseudo du membre")
+@discord.app_commands.describe(roles = "Rôle à ajouter")
 async def test(interaction: discord.Interaction, member: discord.Member, roles: discord.Role):
     if roles is not None:
         await member.add_roles(roles)
     await interaction.response.send_message(f"Rôle {roles} ajouté à __{member.name}__", ephemeral=True)
 
 @bot.tree.command(name='delete_role', description='Retirer un rôle à un membre.')
+@discord.app_commands.describe(member = "Pseudo du membre")
+@discord.app_commands.describe(roles = "Rôle à supprimer")
 async def test(interaction: discord.Interaction, member: discord.Member, roles: discord.Role):
     if roles is not None:
         await member.remove_roles(roles)
@@ -113,21 +76,21 @@ async def test(interaction: discord.Interaction, member: discord.Member, roles: 
 @bot.tree.command(name='ping', description="Calculer le temps de réponse du bot.", guild=None, )
 async def ping(interaction: discord.Interaction):
     bot_latency = bot.latency * 1000
-    await interaction.response.send_message(f"✅ Le ping est de {bot_latency:.2f} ms", ephemeral=False)
+    embed = discord.Embed(description=f"✅ Le ping est de **{bot_latency:.1f}**ms", color=main_color)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.tree.command(name='bonjour', description="Dire bonjour.")
 async def bonjour(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} dis bonjour ! 👋", ephemeral=False)
 
 @bot.tree.command(name='service_clear', description="Effacer le salon des PDS / FDS.")
-@commands.check(guild_only)
-async def effacer(interaction: discord.Interaction, salon_id: discord.TextChannel):
+async def effacer(interaction: discord.Interaction):
     if interaction.user.guild_permissions.manage_channels:
-            salon = bot.get_channel(salon_id.id)
-            salon_name = salon_id.name
-            salon_category = salon_id.category
-            salon_permissions = salon_id.overwrites
-            salon_position = salon_id.position
+            salon = discord.utils.get(interaction.guild.channels, name=channel_pds_fds)
+            salon_name = channel_pds_fds
+            salon_category = salon.category
+            salon_permissions = salon.overwrites
+            salon_position = salon.position
             if salon:
                 await salon.delete()
                 if isinstance(salon, discord.TextChannel):
@@ -143,7 +106,7 @@ async def effacer(interaction: discord.Interaction, salon_id: discord.TextChanne
                         position=salon_position
                     )
 
-                await interaction.response.send_message(f"Le salon {salon_name} a été effacé puis recréé dans la catégorie {salon_category.name}.", ephemeral=True)
+                await interaction.response.send_message(f"Le salon `{salon_name}` a été effacé puis recréé dans la catégorie `{salon_category.name}`.", ephemeral=True)
             else:
                 await interaction.response.send_message("Le salon spécifié n'a pas été trouvé.", ephemeral=True)
     else:
@@ -151,42 +114,70 @@ async def effacer(interaction: discord.Interaction, salon_id: discord.TextChanne
 
 # Commandes Slash de modération
 
-@bot.tree.command(name='ban', description="Bannir un membre.", guild=None)
-async def ping(interaction: discord.Interaction, member: discord.Member, reason: str):
-    if member == interaction.user:
-        await interaction.response.send_message("Vous ne pouvez pas vous bannir vous-même.", ephemeral=True)
-        return
+@bot.tree.command(name='ban', description="Bannir un membre.")
+@discord.app_commands.describe(membre = "Pseudo du membre")
+@discord.app_commands.describe(raison = "Raison du bannissement")
+async def ping(interaction: discord.Interaction, membre: discord.Member, raison: str):
+    if interaction.user.guild_permissions.ban_members:
+        if membre == interaction.user:
+            await interaction.response.send_message("Vous ne pouvez pas vous bannir vous-même.", ephemeral=True)
+            return
 
-    if member == interaction.guild.owner:
-        await interaction.response.send_message("Vous ne pouvez pas bannir le propriétaire du serveur.", ephemeral=True)
-        return
+        if membre == interaction.guild.owner:
+            await interaction.response.send_message("Vous ne pouvez pas bannir le propriétaire du serveur.", ephemeral=True)
+            return
 
-    try:
-        await member.ban(delete_message_days=7)
-        await interaction.response.send_message(f"{member.mention} a été banni avec succès. ```Raison : {reason}```", ephemeral=False)
-    except discord.Forbidden:
-        await interaction.response.send_message("Je n'ai pas les permissions nécessaires pour bannir cet utilisateur.", ephemeral=True)
+        try:
+            await membre.ban(delete_message_days=7, reason=raison)
+            embed = discord.Embed(title="Bannisement", description=f"L'utilisateur `{membre}` à été **banni**\n > Raison: {raison}", color=ban_color)
+            await interaction.response.send_message(embed=embed)
+        except discord.Forbidden:
+            await interaction.response.send_message("Je n'ai pas les permissions nécessaires pour bannir cet utilisateur.", ephemeral=True)
+    else:
+        await interaction.response.send_message("Vous devez avoir la permission 'Ban Members' pour utiliser cette commande.")
 
-@bot.tree.command(name='kick', description="Kick un membre.", guild=None)
-async def unban(interaction: discord.Interaction, member: discord.Member, reason:str):
-    if member == interaction.user:
-        await interaction.response.send_message("Vous ne pouvez pas vous kick vous-même.", ephemeral=True)
-        return
+@bot.tree.command(name='kick', description="Kick un membre.")
+@discord.app_commands.describe(member = "Pseudo du membre")
+@discord.app_commands.describe(reason = "Raison du kick")
+async def kick(interaction: discord.Interaction, member: discord.Member, reason:str):
+    if interaction.user.guild_permissions.kick_members:
+        if member == interaction.user:
+            await interaction.response.send_message("Vous ne pouvez pas vous kick vous-même.", ephemeral=True)
+            return
 
-    if member == interaction.guild.owner:
-        await interaction.response.send_message("Vous ne pouvez pas kick le propriétaire du serveur.", ephemeral=True)
-        return
+        if member == interaction.guild.owner:
+            await interaction.response.send_message("Vous ne pouvez pas kick le propriétaire du serveur.", ephemeral=True)
+            return
 
-    try:
-        await member.kick()
-        await interaction.response.send_message(f"{member.mention} a été kick avec succès. ```Raison : {reason}```", ephemeral=False)
-    except discord.Forbidden:
-        await interaction.response.send_message("Je n'ai pas les permissions nécessaires pour bannir cet utilisateur.", ephemeral=True)
+        try:
+            await member.kick(reason=reason)
+            embed = discord.Embed(title="Expulsion", description=f"L'utilisateur `{member}` à été **kick**\n > Raison: {reason}", color=ban_color)
+            await interaction.response.send_message(embed=embed)
+        except discord.Forbidden:
+            await interaction.response.send_message("Je n'ai pas les permissions nécessaires pour kick cet utilisateur.", ephemeral=True)
+    else:
+        await interaction.response.send_message(f"Vous devez avoir la permission 'Kick Member' pour utiliser cette commande.")
+
+@bot.tree.command(name='unban', description='Débanir un membre.')
+@discord.app_commands.describe(user_id = "ID de l'utilisateur")
+async def unban(interaction: discord.Interaction, user_id: str):
+    user = await bot.fetch_user(user_id)
+    if interaction.user.guild_permissions.ban_members:
+        try:
+            await interaction.guild.unban(user)
+            embed = discord.Embed(title="Débannissement", description=f"L'utilisateur `({user})` a été **débanni**.", color=unban_color)
+            await interaction.response.send_message(embed=embed)
+        except discord.NotFound:
+            await interaction.response.send_message(f"L'utilisateur {user.mention} n'est pas actuellement banni.")
+        except discord.Forbidden:
+            await interaction.response.send_message("Le bot n'a pas les permissions nécessaires pour débannir cet utilisateur.")
+    else:
+        await interaction.response.send_message("Vous devez avoir la permission 'Ban Members' pour utiliser cette commande.")
+
 
 # Commande Slash statut service
         
 @bot.tree.command(name="service", description="Effectif en service.")
-@commands.check(guild_only)
 async def service(interaction: discord.Interaction):
     role = discord.utils.get(interaction.guild.roles, name=role_service)
 
@@ -200,7 +191,8 @@ async def service(interaction: discord.Interaction):
 # Commandes Slash Factures
 
 @bot.tree.command(name="facture", description="Enregistrer une facture.")
-@commands.check(guild_only)
+@discord.app_commands.describe(facturation = "Prix de la facture.")
+@discord.app_commands.describe(photo_url = "URL de la capture de la facture.") 
 async def service(interaction: discord.Interaction, facturation: str, photo_url: str = None):
     guild = interaction.guild
     channel = discord.utils.get(guild.channels, name=channel_facture)
@@ -214,35 +206,17 @@ async def service(interaction: discord.Interaction, facturation: str, photo_url:
 # Commande discussion DM
 
 @bot.tree.command(name="dm", description="DM une personne.")
+@discord.app_commands.describe(user = "Utilisateur à DM.")
+@discord.app_commands.describe(message = "Message à envoyer.")
 async def service(interaction: discord.Interaction, user: discord.Member, message: str):
     await user.send("**(Staff " + interaction.user.name + ") :** " + message)
     await interaction.response.send_message("Votre message a bien été envoyé !", ephemeral=True)
-
-# Commande Boutton Espace Personnel    
-
-class Menu(discord.ui.View):
-    def __init__(self):
-        super().__init__()
-        self.value = None
-    
-    @discord.ui.button(label="Ouvrir un dossier personnel 📁", style=discord.ButtonStyle.green)
-    async def menu1(self, interaction: discord.Interaction, button:discord.ui.Button):
-        position = discord.utils.get(interaction.guild.categories, name=espacesperso_cat) 
-        channel = await interaction.guild.create_text_channel(f"📁・{interaction.user.name}-Espace Personnel", category=position)
-        await channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
-        await channel.set_permissions(interaction.guild.default_role, read_messages=False, send_messages=False)
-        await interaction.response.send_message(f"Dossier personnel crée <#{channel.id}>", ephemeral=True)
-        await asyncio.sleep(2)
-        await channel.send(f"Bienvenue sur ton espace personnel {interaction.user.mention}, un membre du staff va te donner ton matricule d'ici peu. Bienvenu parmis nous!")
-
-@bot.command()
-async def menu(ctx):
-    view = Menu()
-    await ctx.send(f"Clique sur le bouton __Ouvrir un dossier personnel 📁__ pour créer ton espace personnel.", view=view)
-    
+ 
 # Commande SAY
 
 @bot.tree.command(name="say", description="Envoyer un message sur un salon spécifique.")
+@discord.app_commands.describe(channel = "Salon où envoyer le message.")
+@discord.app_commands.describe(content = "Contenu du message.")
 async def say(interaction: discord.Interaction, channel: discord.TextChannel, content: str):
     if discord.utils.get(interaction.user.roles, name=name_staff):
         if channel.permissions_for(interaction.guild.me).read_messages and channel.permissions_for(interaction.guild.me).send_messages:
