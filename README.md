@@ -1,5 +1,6 @@
 # Bot Discord DownTown Cab Co
 ![DowntownCabCo-GTAV-Logo](https://github.com/Energielulu83852/Bot-Discord-DownTown-CabCo/assets/87243558/d7220ec5-043b-4cb1-b29f-a8f30c064251)
+
 Ce bot a été entièrement codé par Lucas DE ARAUJO, avec python et sous license.
 ## Dépendances utilisées :
 Discord.py, pytz, datetime et asyncio
