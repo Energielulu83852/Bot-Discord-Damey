@@ -305,7 +305,6 @@ async def recrutement(ctx):
     embed.set_footer(text="L'équipe du DownTown Cab Co.")
     embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
     embed.add_field(name="État des recrutuments", value="🟢 Actuellements ouverts.", inline=False)
-    embed.add_field(name="Lien du formulaire", value="https://docs.google.com/forms/d/e/1FAIpQLSckEXklFZcd2Ctj5ZgCcJFFY8nWSgYjP8Fz0DTv9EgA-dv9hg/viewform?usp=sharing", inline=False)
     await ctx.send(embed=embed, view=Tickets_rec())
 
 # Système de Tickets - Aide
