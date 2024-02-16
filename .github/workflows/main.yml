@@ -1,3 +1,8 @@
+name: Sync to Pterodactyl game servers
+on:
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
