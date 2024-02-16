@@ -1,0 +1,23 @@
+name: Sync to Pterodactyl game servers
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Pterodactyl
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: rexlmanu/pterodactyl-upload-action@v2.1
+        with:
+          panel-host: http://92.92.27.136
+          api-key: ptlc_aSai9zoEM95V1C3HNN63k0tHoQRPbqe598yRzIOndJI
+          server-id: "18c3d615-0789-4b52-a027-ce4bcfcc4210"
+          source: "main.py"
+          target: "./"
+          # If you want to restart the servers after successful upload
+          # restart: true
+          # If you want to decompress the files after successful upload
+          # decompress-target: true
