@@ -4,7 +4,7 @@ jobs:
     name: Deploy to Pterodactyl
     steps:
       - name: Upload files to Pterodactyl
-      - uses: rexlManu/pterodactyl-upload-action@v2.4
+      uses: rexlManu/pterodactyl-upload-action@v2.4
         with:
           # The host of the pterodactyl instance
           panel-host: http://92.92.27.136
