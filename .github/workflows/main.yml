@@ -1,28 +1,31 @@
-  - name: Upload files to Pterodactyl
-  # You may pin to the exact commit or the version.
-  # uses: rexlManu/pterodactyl-upload-action@f5e79f1f6219d12ee55d4e4b4d38b4a85bf1bf5f
-  uses: rexlManu/pterodactyl-upload-action@v2.4
-  with:
-    # The host of the pterodactyl instance
-    panel-host: http://92.92.27.136
-    # The client api key of the pterodactyl instance
-    api-key: ptlc_aSai9zoEM95V1C3HNN63k0tHoQRPbqe598yRzIOndJI
-    # The server id of the server
-    server-id: 18c3d615-0789-4b52-a027-ce4bcfcc4210
-    # The server ids of the servers
-    server-ids: # optional
-    # The source to upload
-    source: main.py
-    # The sources to upload
-    sources: # optional
-    # The target where the files should be uploaded on the servers
-    target: ./
-    # Restart the servers after the upload
-    restart: # optional
-    # The proxy to use
-    proxy: # optional
-    # Decompress archive file after upload in target
-    decompress-target: # optional
-    # Indicates whether to follow symbolic links
-    follow-symbolic-links: # optional, default is true
-          
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Pterodactyl
+    steps:
+      - name: Upload files to Pterodactyl
+      - uses: rexlManu/pterodactyl-upload-action@v2.4
+        with:
+          # The host of the pterodactyl instance
+          panel-host: http://92.92.27.136
+          # The client api key of the pterodactyl instance
+          api-key: ptlc_aSai9zoEM95V1C3HNN63k0tHoQRPbqe598yRzIOndJI
+          # The server id of the server
+          server-id: 18c3d615-0789-4b52-a027-ce4bcfcc4210
+          # The server ids of the servers
+          server-ids: # optional
+          # The source to upload
+          source: main.py
+          # The sources to upload
+          sources: # optional
+          # The target where the files should be uploaded on the servers
+          target: ./
+          # Restart the servers after the upload
+          restart: # optional
+          # The proxy to use
+          proxy: # optional
+          # Decompress archive file after upload in target
+          decompress-target: # optional
+          # Indicates whether to follow symbolic links
+          follow-symbolic-links: # optional, default is true
+              
