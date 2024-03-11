@@ -361,7 +361,11 @@ class PDS_FDS(discord.ui.View):
                 await channel.send(embed=embed)
                 del service_start_times[interaction.user.id]
             else:
-                await channel.send(f'{interaction.user.mention} prend sa fin de service à {datetime.now().strftime("%H:%M")}.')
+                tz = pytz.timezone('Europe/Paris')
+                current_time = datetime.now(tz).strftime("%H:%M")
+                embed = discord.Embed(title="Fin de service", description=f"Fin de service pris par {interaction.user.mention}", color=0xf54242)
+                embed.add_field(name="Heure", value=f"{current_time}")
+                await channel.send(embed=embed)
 
         else:
             await interaction.response.send_message(f"Vous n'êtes pas en service.", ephemeral=True)
@@ -369,9 +373,10 @@ class PDS_FDS(discord.ui.View):
 
 @bot.command()
 async def pds_fds(ctx):
-    embed = discord.Embed(title="Prises de services", description=f"Annoncer votre début de service ou fin de service à l'aide des boutons. Cela permet d'aider le staff a connaître le nombre d'effectif en service", color=0xffff00)
+    embed = discord.Embed(title=None, description=f"Annoncer votre début de service ou fin de service à l'aide des boutons. Cela permet d'aider le staff a connaître le nombre d'effectif en service", color=0xffff00)
     embed.set_footer(text='La Direction')
-    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
+    embed.set_author(name="Pointeuse Taxi", icon_url='https://i.imgur.com/FOeB1Rl.jpg')
+    embed.set_image(url="https://i.imgur.com/zLjLTiU.jpeg")
     await ctx.send(embed = embed, view=PDS_FDS())
 
 bot.run(BOT_TOKEN)
