@@ -52,3 +52,5 @@ Le préfix est ? et modifiable dès le début du code. Il est représenté par l
     - Commande de modification de l'embed des recrutements (recrutements ouverts) -> [prefix]recrutement_on
     - Commande de modification de l'embed des recrutements (recrutements fermés) -> [prefix]recrutement_off
 
+## Si vous souhaitez soutenir le projet : 
+Si vous souhaitez soutenir le projet, voici le lien de mon compte PayPal : https://paypal.me/ldaraujo?country.x=FR&locale.x=fr_FR
