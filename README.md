@@ -47,3 +47,5 @@ Le préfix est ? et modifiable dès le début du code. Il est représenté par l
     - Commande de création de ticket de candidature -> [prefix]recrutement
     - Commande de création d'un embed avec les boutons PDS / FDS -> [prefix]pds_fds
 
+## Si vous souhaitez soutenir le projet : 
+Si vous souhaitez soutenir le projet, voici le lien de mon compte PayPal : https://paypal.me/ldaraujo?country.x=FR&locale.x=fr_FR
