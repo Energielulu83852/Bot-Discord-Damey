@@ -3,7 +3,7 @@ from discord.ext import commands
 from datetime import datetime
 import asyncio
 import pytz
-from config import BOT_TOKEN, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
+from config import BOT_TOKEN, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
@@ -36,8 +36,9 @@ async def on_member_join(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, name=channel_airport_arrival)
     if channel:
+        name_srv = member.guild.name
         await channel.send(f'<@{member.id}>')
-        embed = discord.Embed(title="Un nouveau membre est arrivé !", description=f"Bienvenu {member.name} sur le discord du Taxi | VitaLife 🚕", color=0x999999)
+        embed = discord.Embed(title="Un nouveau membre est arrivé !", description=f"Bienvenu {member.name} sur le discord {name_srv}", color=0x14ca13)
         embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
         await channel.send(embed=embed)
     roles = discord.utils.get(member.guild.roles, name=role_client)
@@ -49,7 +50,8 @@ async def on_member_remove(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, name=channel_airport_departure)
     if channel:
-        embed = discord.Embed(title="Un membre est parti...😢", description=f"A très vite {member.name} sur le discord du Taxi | VitaLife 🚕", color=0x999999)
+        name_srv = member.guild.name
+        embed = discord.Embed(title="Un membre est parti...😢", description=f"A très vite {member.name} sur le discord {name_srv}", color=0x999999)
         embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
         await channel.send(embed=embed)
 
@@ -208,8 +210,13 @@ async def service(interaction: discord.Interaction, facturation: str, photo_url:
 @bot.tree.command(name="dm", description="DM une personne.")
 @discord.app_commands.describe(user = "Utilisateur à DM.")
 @discord.app_commands.describe(message = "Message à envoyer.")
-async def service(interaction: discord.Interaction, user: discord.Member, message: str):
-    await user.send("**(Staff " + interaction.user.name + ") :** " + message)
+@discord.app_commands.describe(image = "Lien de l'image à envoyer.")
+async def service(interaction: discord.Interaction, user: discord.Member, message: str, image: discord.Attachment = None):
+    if image:
+        image_send = await image.to_file()
+        await user.send("**(Staff " + interaction.user.name + ") :** " + message, file = image_send)
+    else :
+        await user.send("**(Staff " + interaction.user.name + ") :** " + message)
     await interaction.response.send_message("Votre message a bien été envoyé !", ephemeral=True)
  
 # Commande SAY
@@ -275,11 +282,31 @@ class RecrutementForm(discord.ui.Modal, title="Recrutement - Informations"):
 
 @bot.command()
 async def recrutement(ctx):
-    embed = discord.Embed(title="DownTown Cab Co - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Vous devrez remplir un formulaire après avoir cliqué sur le bouton.*__", color=0xffff00)
-    embed.set_footer(text="L'équipe du DownTown Cab Co.")
-    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
-    embed.add_field(name="État des recrutuments", value="🟢 Actuellements ouverts.", inline=False)
+    embed = discord.Embed(title=f"{entreprise_name} - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Vous devrez remplir un formulaire après avoir cliqué sur le bouton.*__", color=main_color)
+    embed.set_footer(text=f"L'équipe du {entreprise_name}.")
+    embed.set_image(url=url_image_entreprise)
+    embed.add_field(name="État des recrutuments", value="🔴 Actuellements fermés.", inline=False)
     await ctx.send(embed=embed, view=Tickets_rec())
+
+@bot.command()
+async def recrutement_on(ctx, id: int):
+    channel = ctx.channel
+    message_to_edit = await channel.fetch_message(id)
+    embed = discord.Embed(title=f"{entreprise_name} - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Vous devrez remplir un formulaire après avoir cliqué sur le bouton.*__", color=main_color)
+    embed.set_footer(text=f"L'équipe du {entreprise_name}.")
+    embed.set_image(url=url_image_entreprise)
+    embed.add_field(name="État des recrutuments", value="🟢 Actuellements ouverts.", inline=False)
+    await message_to_edit.edit(embed=embed, view=Tickets_rec())
+
+@bot.command()
+async def recrutement_off(ctx, id: int):
+    channel = ctx.channel
+    message_to_edit = await channel.fetch_message(id)
+    embed = discord.Embed(title=f"{entreprise_name} - Recrutements", description=f"Pour avoir une chance de rejoindre notre société, il faut respecter quelques critères importants :\n\n> • Être sérieux et responsable.\n> • Être disponible assez souvent dans la semaine. (Disponibilité à notifier dans la candidature)\n> • Être à l'écoute des ordres et ne pas manquez de respect à la hiérarchie.\n> • Être respectueux envers les civils.\n> • Être titulaire du code ainsi que du permis de voiture.\n> • Être calme attentif et à l'écoute\n> • Avoir un langage correct\n\nSi vous respectez tous ces critères et que vous souhaitez nous rejoindre, cliquez sur le bouton pour confirmer votre candidature. __*Vous devrez remplir un formulaire après avoir cliqué sur le bouton.*__", color=main_color)
+    embed.set_footer(text=f"L'équipe du {entreprise_name}.")
+    embed.set_image(url=url_image_entreprise)
+    embed.add_field(name="État des recrutuments", value="🔴 Actuellements fermés.", inline=False)
+    await message_to_edit.edit(embed=embed, view=None)
 
 # Système de Tickets - Aide
 
@@ -301,7 +328,7 @@ class Aide(discord.ui.View):
 async def Help(ctx):
     embed = discord.Embed(title="Besoin d'aide", description=f"Clique sur le bouton pour créer un ticket d'aide. __**Tout abus sera puni**__", color=0xe60000)
     embed.set_footer(text='La Direction')
-    embed.set_image(url='https://i.imgur.com/FOeB1Rl.jpg')
+    embed.set_image(url=url_image_entreprise)
     await ctx.send(embed=embed, view=Aide())
 
 # Système de Tickets - Fermeture des tickets
@@ -375,8 +402,8 @@ class PDS_FDS(discord.ui.View):
 async def pds_fds(ctx):
     embed = discord.Embed(title=None, description=f"Annoncer votre début de service ou fin de service à l'aide des boutons. Cela permet d'aider le staff a connaître le nombre d'effectif en service", color=0xffff00)
     embed.set_footer(text='La Direction')
-    embed.set_author(name="Pointeuse Taxi", icon_url='https://i.imgur.com/FOeB1Rl.jpg')
-    embed.set_image(url="https://i.imgur.com/zLjLTiU.jpeg")
+    embed.set_author(name="Pointeuse Taxi", icon_url=url_logo_entreprise)
+    embed.set_image(url=url_image_entreprise)
     await ctx.send(embed = embed, view=PDS_FDS())
 
 bot.run(BOT_TOKEN)

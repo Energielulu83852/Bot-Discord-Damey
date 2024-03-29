@@ -20,7 +20,10 @@ espacesperso_cat = "salon_de_la_categorie_espace_perso"
 name_staff = "nom_role_staff"
 candid_cat = "nom_categorie_candidature"
 help_cat = "nom_categorie_candidature"
-role_service = "nom_role_service" 
+role_service = "nom_role_service"
+entreprise_name = "nom de l'entreprise"
+url_image_entreprise = "une image représentant l'entreprise"
+url_logo_entreprise = "le logo de l'entreprises" 
 ```
 Ainsi que d'installer les dépendances avec :
 ```
@@ -46,4 +49,6 @@ Le préfix est ? et modifiable dès le début du code. Il est représenté par l
     - Commande de création de ticket aide -> [prefix]Help
     - Commande de création de ticket de candidature -> [prefix]recrutement
     - Commande de création d'un embed avec les boutons PDS / FDS -> [prefix]pds_fds
+    - Commande de modification de l'embed des recrutements (recrutements ouverts) -> [prefix]recrutement_on
+    - Commande de modification de l'embed des recrutements (recrutements fermés) -> [prefix]recrutement_off
 
