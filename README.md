@@ -5,7 +5,7 @@ Ce bot a été entièrement codé par Papy Lulu, avec python et sous license MIT
 ## Dépendances utilisées :
 Discord.py, pytz, datetime et asyncio
 ## Installation
-Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer la ligne suivante : 
+Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer les lignes suivantes : 
 ```
 BOT_TOKEN = "votre-token-du-bot"
 main_color = couleur_principale_de_votre_bot
@@ -30,7 +30,7 @@ Ainsi que d'installer les dépendances avec :
 pip install discord.py pytz datetime asyncio
 ```
 ## Ses fonctionnalitées : 
-Le préfix est ? et modifiable dès le début du code. Il est représenté par la suite avec [prefix].
+Le préfix est ? et il est modifiable dès le début du code. Il est représenté par la suite avec [prefix].
 
 ### Différentes commandes slash : 
     - Commande BAN (restrinte au administrateurs) -> /ban
