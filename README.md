@@ -25,6 +25,7 @@ entreprise_name = "nom de l'entreprise"
 url_image_entreprise = "une image représentant l'entreprise"
 url_logo_entreprise = "le logo de l'entreprises" 
 prefix = "le prefix que vous souhaitez"
+role_recrutement = "nom du rôle du responsable recrutement"
 ```
 Ainsi que d'installer les dépendances avec :
 ```
