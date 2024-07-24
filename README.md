@@ -24,6 +24,7 @@ role_service = "nom_role_service"
 entreprise_name = "nom de l'entreprise"
 url_image_entreprise = "une image représentant l'entreprise"
 url_logo_entreprise = "le logo de l'entreprises" 
+prefix = "le prefix que vous souhaitez"
 ```
 Ainsi que d'installer les dépendances avec :
 ```

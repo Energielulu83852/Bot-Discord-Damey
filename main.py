@@ -3,12 +3,12 @@ from discord.ext import commands
 from datetime import datetime
 import asyncio
 import pytz
-from config import BOT_TOKEN, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
+from config import BOT_TOKEN, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix = "?",intents=intents)
+bot = commands.Bot(command_prefix = prefix,intents=intents)
 service_start_times = {}
 service_effectif=0
 
@@ -54,6 +54,16 @@ async def on_member_remove(member):
         embed = discord.Embed(title="Un membre est parti...😢", description=f"A très vite {member.name} sur le discord {name_srv}", color=0x999999)
         embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
         await channel.send(embed=embed)
+
+# Commande Help
+
+@bot.tree.command(name='help', description='Donne des indication sur le fonctionnement du bot.')
+async def test(interaction: discord.Interaction):
+    embed = discord.Embed(description=f"Bienvenu sur la commande Aide, vous trouverez ici toutes les commandes ainsi que leur fonctionnement et utilité.\n\n • **/add_role** : (Réservé au Staff) Ajouter un rôle à un membre lorsque celui-ci rejoinds le serveur.\n • **/ban** : (Réservé au Staff) Banni un membre.\n • **/bonjour** : Dit bonjour dans le salon où la commande est exécutée.\n • **/delete_role** : (Réservé au Staff) Supprimer un rôle qui auarit été ajouté lorsqu'un membre rejoinds le serveur.\n • **/dm** : (Réservé au Staff) Envoyer un message privé avec le bot à un membre du serveur.\n • **/facture** : Créer une nouvelle facture.\n • **/kick** : (Réservé au Staff) Permet d'exclure un membre du serveur.\n • **/ping** : Permet de connaître le ping entre vous et le bot.\n • **/say** : (Réservé au Staff) Permet d'envoyer un message à l'aide du bot.\n • **/service** : Permet de connaître le nombre de personnes en service.\n • **/service_clear** : (Réservé au Staf) Permet de nettoyer le salon des PDS et FDS.\n • **/unban** : (Réservé au Staff) Permet de débannir un joueur\n • **{prefix}Help** : (Réservé au Staff) Permet de créer l'embed Aide dans le salon où est executé la commande\n • **{prefix}recrutement** : (Réservé au Staff) Permet de créer l'embed pour les recrutements\n • **{prefix}pds_fds** : (Réservé au Staff) Permet de créer l'embed pour les prises et fin de service\n • **{prefix}recrutement_on** : (Réservé au Staff) Permet de rendre possible le dépot de CV sur l'embed recrutement\n • **{prefix}recrutement_off** : (Réservé au Staff) Permet de ne plus rendre accessible le dépot de CV sur l'embed recrutement", color=main_color)
+    embed.set_author(name="Commande Aide", icon_url=url_logo_entreprise)
+    embed.set_footer(text=bot.user.name)
+    await interaction.response.send_message(embed=embed)
+
 
 # Commandes Slash Administration
 
