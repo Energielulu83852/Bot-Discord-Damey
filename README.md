@@ -3,7 +3,7 @@
 
 Ce bot a été entièrement codé par Papy Lulu, avec python et sous licence MIT.
 ## Dépendances utilisées :
-Discord.py, pytz, datetime et asyncio
+Discord.py, pytz, discord-timestamps, datetime et asyncio
 ## Installation
 Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer les lignes suivantes : 
 ```
@@ -29,7 +29,7 @@ role_recrutement = "nom du rôle du responsable recrutement"
 ```
 Ainsi que d'installer les dépendances avec :
 ```
-pip install discord.py pytz datetime asyncio
+pip install discord.py pytz datetime asyncio discord-timestamps
 ```
 ## Ses fonctionnalitées : 
 Le préfix est ? et il est modifiable dès le début du code. Il est représenté par la suite avec [prefix].

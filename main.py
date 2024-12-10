@@ -3,6 +3,7 @@ from discord.ext import commands
 from datetime import datetime
 import asyncio
 import pytz
+import discord_timestamps
 from config import BOT_TOKEN, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
@@ -11,6 +12,7 @@ intents.members = True
 bot = commands.Bot(command_prefix = prefix,intents=intents)
 service_start_times = {}
 service_effectif=0
+personnes_service = []
 
 
 # Définition statut Bot
@@ -386,12 +388,29 @@ class PDS_FDS(discord.ui.View):
             if role not in interaction.user.roles:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(f"Bon service !", ephemeral=True)
-                tz = pytz.timezone('Europe/Paris')
+                '''tz = pytz.timezone('Europe/Paris')
                 service_start_times[interaction.user.id] = datetime.now(tz)
                 current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Prise de service", description=f"Prise de service par {interaction.user.mention}", color=0x4bf542)
                 embed.add_field(name="Heure", value=f"{current_time}")
-                await channel.send(embed=embed)
+                await channel.send(embed=embed)'''
+                tz = pytz.timezone('Europe/Paris')
+                current_time = datetime.now(tz)
+                current_timestamp = int(datetime.now(tz).timestamp())
+                personnes_service.append([interaction.user.id,current_timestamp])
+                if personnes_service:
+                    utilisateurs = "\n".join([f"<@{user_id[0]}> | Depuis : <t:{user_id[1]}:R>" for user_id in personnes_service])
+                    description = f"Voici les utilisateurs actuellement en service :\n{utilisateurs}"
+                else:
+                    description = "_Personne n'est en service ... :(_"
+                embed = discord.Embed(
+                    title='🔎 Utilisateurs en service (0) :', 
+                    description=description, 
+                    color=main_color, 
+                    timestamp=current_time)
+                embed.set_footer(text=f'La Direction')
+                embed.set_author(name=entreprise_name, icon_url=url_logo_entreprise)
+                await bot.saved_message_pds_fds.edit(embed=embed)
             else:
                 await interaction.response.send_message(f"Vous êtes déjà en service.", ephemeral=True)
   @discord.ui.button(label="❌ - Prendre sa fin de service", style=discord.ButtonStyle.red, custom_id="out_service")
@@ -405,7 +424,7 @@ class PDS_FDS(discord.ui.View):
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(f"Fin de service confirmé !", ephemeral=True)
 
-            if interaction.user.id in service_start_times:
+            '''if interaction.user.id in service_start_times:
                 service_start_time = service_start_times[interaction.user.id]
                 tz = pytz.timezone('Europe/Paris')
                 service_duration = datetime.now(tz) - service_start_time
@@ -420,7 +439,26 @@ class PDS_FDS(discord.ui.View):
                 current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Fin de service", description=f"Fin de service pris par {interaction.user.mention}", color=0xf54242)
                 embed.add_field(name="Heure", value=f"{current_time}")
-                await channel.send(embed=embed)
+                await channel.send(embed=embed)'''
+            for i in range(len(personnes_service)):
+                if interaction.user.id == personnes_service[i][0]:
+                    personnes_service.pop(i)
+            tz = pytz.timezone('Europe/Paris')
+            current_time = datetime.now(tz)
+            current_timestamp = int(datetime.now(tz).timestamp())
+            if personnes_service:
+                utilisateurs = "\n".join([f"<@{user_id[0]}> | Depuis : <t:{user_id[1]}:R>" for user_id in personnes_service[0]])
+                description = f"Voici les utilisateurs actuellement en service :\n{utilisateurs}"
+            else:
+                description = "_Personne n'est en service ... :(_"
+            embed = discord.Embed(
+                title='🔎 Utilisateurs en service (0) :', 
+                description=description, 
+                color=main_color, 
+                timestamp=current_time)
+            embed.set_footer(text=f'La Direction')
+            embed.set_author(name=entreprise_name, icon_url=url_logo_entreprise)
+            await bot.saved_message_pds_fds.edit(embed=embed)
 
         else:
             await interaction.response.send_message(f"Vous n'êtes pas en service.", ephemeral=True)
@@ -429,10 +467,12 @@ class PDS_FDS(discord.ui.View):
 @bot.command()
 async def pds_fds(ctx):
     if ctx.author.guild_permissions.administrator :
-        embed = discord.Embed(title=None, description=f"Annoncer votre début de service ou fin de service à l'aide des boutons. Cela permet d'aider le staff a connaître le nombre d'effectif en service", color=0xffff00)
-        embed.set_footer(text='La Direction')
-        embed.set_author(name="Pointeuse Taxi", icon_url=url_logo_entreprise)
-        embed.set_image(url=url_image_entreprise)
-        await ctx.send(embed = embed, view=PDS_FDS())
+        tz = pytz.timezone('Europe/Paris')
+        current_time = datetime.now(tz)
+        embed = discord.Embed(title='🔎 Utilisateurs en service (0) :', description=f"_Personne n'est en service ... :(_", color=main_color, timestamp=current_time)
+        embed.set_footer(text=f'La Direction')
+        embed.set_author(name=entreprise_name, icon_url=url_logo_entreprise)
+        message = await ctx.send(embed = embed, view=PDS_FDS())
+        bot.saved_message_pds_fds = message
 
 bot.run(BOT_TOKEN)
