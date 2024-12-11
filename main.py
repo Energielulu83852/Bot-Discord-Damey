@@ -5,7 +5,7 @@ import asyncio
 import pytz
 import discord_timestamps
 import json
-from config import BOT_TOKEN, channel_msg_pds_fds, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
+from config import BOT_TOKEN, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
@@ -29,8 +29,8 @@ async def on_ready():
         with open("savings.json", "r") as file:
             data = json.load(file)
             saved_message_id = data["msg_pds_fds_id"]
-        channel_id = discord.utils.get(bot.get_all_channels(), name=channel_msg_pds_fds)
-        channel = bot.get_channel(channel_id.id)
+            channel_message_id = data["channel_pds_fds_id"]
+        channel = bot.get_channel(channel_message_id)
         saved_message = await channel.fetch_message(saved_message_id)
         bot.saved_message_pds_fds = saved_message
     except FileNotFoundError:
@@ -486,6 +486,6 @@ async def pds_fds(ctx):
         message = await ctx.send(embed = embed, view=PDS_FDS())
         bot.saved_message_pds_fds = message
         with open("savings.json", "w") as file:
-            json.dump({"msg_pds_fds_id": message.id}, file)
+            json.dump({"msg_pds_fds_id": message.id,"channel_pds_fds_id": ctx.channel.id}, file)
 
 bot.run(BOT_TOKEN)
