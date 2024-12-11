@@ -3,9 +3,9 @@
 
 Ce bot a été entièrement codé par Papy Lulu, avec python et sous licence MIT.
 ## Dépendances utilisées :
-Discord.py, pytz, discord-timestamps, datetime et asyncio
+Discord.py, pytz, discord-timestamps, datetime, json et asyncio
 ## Installation
-Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "config.py" et y insérer les lignes suivantes : 
+Lorsque vous souhaitez utiliser ce code, veuillez créer un fichier "saving.json" sans aucun contenu puis un fichier "config.py" et y insérer les lignes suivantes : 
 ```
 BOT_TOKEN = "votre-token-du-bot"
 main_color = couleur_principale_de_votre_bot

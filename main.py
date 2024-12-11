@@ -4,7 +4,8 @@ from datetime import datetime
 import asyncio
 import pytz
 import discord_timestamps
-from config import BOT_TOKEN, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
+import json
+from config import BOT_TOKEN, channel_msg_pds_fds, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
@@ -24,6 +25,16 @@ async def on_ready():
     bot.add_view(Aide())
     bot.add_view(Tickets_rec())
     bot.add_view(PDS_FDS())
+    try:
+        with open("savings.json", "r") as file:
+            data = json.load(file)
+            saved_message_id = data["msg_pds_fds_id"]
+        channel_id = discord.utils.get(bot.get_all_channels(), name=channel_msg_pds_fds)
+        channel = bot.get_channel(channel_id.id)
+        saved_message = await channel.fetch_message(saved_message_id)
+        bot.saved_message_pds_fds = saved_message
+    except FileNotFoundError:
+        print("Aucun fichier JSON trouvé. Aucun message sauvegardé.")
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name='A votre service ! 🚕'))
     try:
         synced = await bot.tree.sync()
@@ -388,19 +399,19 @@ class PDS_FDS(discord.ui.View):
             if role not in interaction.user.roles:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(f"Bon service !", ephemeral=True)
-                '''tz = pytz.timezone('Europe/Paris')
+                tz = pytz.timezone('Europe/Paris')
                 service_start_times[interaction.user.id] = datetime.now(tz)
                 current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Prise de service", description=f"Prise de service par {interaction.user.mention}", color=0x4bf542)
                 embed.add_field(name="Heure", value=f"{current_time}")
-                await channel.send(embed=embed)'''
+                await channel.send(embed=embed)
                 tz = pytz.timezone('Europe/Paris')
                 current_time = datetime.now(tz)
                 current_timestamp = int(datetime.now(tz).timestamp())
                 personnes_service.append([interaction.user.id,current_timestamp])
                 if personnes_service:
                     utilisateurs = "\n".join([f"<@{user_id[0]}> | Depuis : <t:{user_id[1]}:R>" for user_id in personnes_service])
-                    description = f"Voici les utilisateurs actuellement en service :\n{utilisateurs}"
+                    description = f"__Voici les utilisateurs actuellement en service :__\n{utilisateurs}"
                 else:
                     description = "_Personne n'est en service ... :(_"
                 embed = discord.Embed(
@@ -424,7 +435,7 @@ class PDS_FDS(discord.ui.View):
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(f"Fin de service confirmé !", ephemeral=True)
 
-            '''if interaction.user.id in service_start_times:
+            if interaction.user.id in service_start_times:
                 service_start_time = service_start_times[interaction.user.id]
                 tz = pytz.timezone('Europe/Paris')
                 service_duration = datetime.now(tz) - service_start_time
@@ -439,7 +450,7 @@ class PDS_FDS(discord.ui.View):
                 current_time = datetime.now(tz).strftime("%H:%M")
                 embed = discord.Embed(title="Fin de service", description=f"Fin de service pris par {interaction.user.mention}", color=0xf54242)
                 embed.add_field(name="Heure", value=f"{current_time}")
-                await channel.send(embed=embed)'''
+                await channel.send(embed=embed)
             for i in range(len(personnes_service)):
                 if interaction.user.id == personnes_service[i][0]:
                     personnes_service.pop(i)
@@ -448,7 +459,7 @@ class PDS_FDS(discord.ui.View):
             current_timestamp = int(datetime.now(tz).timestamp())
             if personnes_service:
                 utilisateurs = "\n".join([f"<@{user_id[0]}> | Depuis : <t:{user_id[1]}:R>" for user_id in personnes_service[0]])
-                description = f"Voici les utilisateurs actuellement en service :\n{utilisateurs}"
+                description = f"__Voici les utilisateurs actuellement en service :__\n{utilisateurs}"
             else:
                 description = "_Personne n'est en service ... :(_"
             embed = discord.Embed(
@@ -474,5 +485,7 @@ async def pds_fds(ctx):
         embed.set_author(name=entreprise_name, icon_url=url_logo_entreprise)
         message = await ctx.send(embed = embed, view=PDS_FDS())
         bot.saved_message_pds_fds = message
+        with open("savings.json", "w") as file:
+            json.dump({"msg_pds_fds_id": message.id}, file)
 
 bot.run(BOT_TOKEN)
