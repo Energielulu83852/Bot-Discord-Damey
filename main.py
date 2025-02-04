@@ -34,7 +34,8 @@ async def on_ready():
         bot.saved_message_pds_fds = saved_message
     except FileNotFoundError:
         print("Aucun fichier JSON trouvé. Aucun message sauvegardé.")
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=presence))
+    if not presence == '':
+        await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=presence))
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
