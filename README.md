@@ -29,7 +29,7 @@ role_recrutement = "nom du rôle du responsable recrutement"
 ```
 Ainsi que d'installer les dépendances avec :
 ```
-pip install discord.py pytz datetime asyncio discord-timestamps json
+pip install discord.py pytz datetime asyncio discord-timestamps
 ```
 ## Ses fonctionnalitées : 
 Le préfix est ? et il est modifiable dès le début du code. Il est représenté par la suite avec [prefix].
