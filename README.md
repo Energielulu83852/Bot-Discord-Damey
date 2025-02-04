@@ -1,5 +1,5 @@
 # Bot Discord Damey
-![Mon Logo](https://github.com/user-attachments/assets/82cd4a32-ec53-4d72-b785-97a568c045a3)
+![Logo_bot_Lucas](https://github.com/user-attachments/assets/82cd4a32-ec53-4d72-b785-97a568c045a3)
 
 Ce bot a été entièrement codé par Papy Lulu, avec python et sous licence MIT.
 ## Dépendances utilisées :
