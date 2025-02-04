@@ -5,16 +5,15 @@ import asyncio
 import pytz
 import discord_timestamps
 import json
-from config import BOT_TOKEN, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, espacesperso_cat, name_staff, candid_cat, help_cat, role_service 
+from config import BOT_TOKEN, presence, role_recrutement, prefix, url_logo_entreprise ,url_image_entreprise, entreprise_name, main_color, ban_color, unban_color, role_client, channel_pds_fds, channel_airport_arrival, channel_airport_departure, channel_facture, name_staff, candid_cat, help_cat, role_service 
 
 
 intents = discord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix = prefix,intents=intents)
+bot = commands.Bot(command_prefix = prefix,intents=intents, help_command=None)
 service_start_times = {}
 service_effectif=0
 personnes_service = []
-
 
 # Définition statut Bot
 
@@ -35,7 +34,7 @@ async def on_ready():
         bot.saved_message_pds_fds = saved_message
     except FileNotFoundError:
         print("Aucun fichier JSON trouvé. Aucun message sauvegardé.")
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name='A votre service ! 🚕'))
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=presence))
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
@@ -46,33 +45,35 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    guild = member.guild
-    channel = discord.utils.get(guild.channels, name=channel_airport_arrival)
-    if channel:
-        name_srv = member.guild.name
-        await channel.send(f'<@{member.id}>')
-        embed = discord.Embed(title="Un nouveau membre est arrivé !", description=f"Bienvenu {member.name} sur le discord {name_srv}", color=0x14ca13)
-        embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
-        await channel.send(embed=embed)
-    roles = discord.utils.get(member.guild.roles, name=role_client)
-    if roles is not None:
-        await member.add_roles(roles)
+    if not channel_airport_arrival == '':
+        guild = member.guild
+        channel = discord.utils.get(guild.channels, name=channel_airport_arrival)
+        if channel:
+            name_srv = member.guild.name
+            await channel.send(f'<@{member.id}>')
+            embed = discord.Embed(title="Un nouveau membre est arrivé !", description=f"Bienvenu {member.name} sur le discord {name_srv}", color=0x14ca13)
+            embed.set_image(url=url_logo_entreprise)
+            await channel.send(embed=embed)
+        roles = discord.utils.get(member.guild.roles, name=role_client)
+        if roles is not None:
+            await member.add_roles(roles)
 
 @bot.event
 async def on_member_remove(member):
-    guild = member.guild
-    channel = discord.utils.get(guild.channels, name=channel_airport_departure)
-    if channel:
-        name_srv = member.guild.name
-        embed = discord.Embed(title="Un membre est parti...😢", description=f"A très vite {member.name} sur le discord {name_srv}", color=0x999999)
-        embed.set_image(url="https://ih1.redbubble.net/image.846319379.2002/st,small,507x507-pad,600x600,f8f8f8.u2.jpg")
-        await channel.send(embed=embed)
+    if not channel_airport_departure == '':
+        guild = member.guild
+        channel = discord.utils.get(guild.channels, name=channel_airport_departure)
+        if channel:
+            name_srv = member.guild.name
+            embed = discord.Embed(title="Un membre est parti...😢", description=f"A très vite {member.name} sur le discord {name_srv}", color=0x999999)
+            embed.set_image(url=url_logo_entreprise)
+            await channel.send(embed=embed)
 
 # Commande Help
 
 @bot.tree.command(name='help', description='Donne des indication sur le fonctionnement du bot.')
 async def test(interaction: discord.Interaction):
-    embed = discord.Embed(description=f"Bienvenu sur la commande Aide, vous trouverez ici toutes les commandes ainsi que leur fonctionnement et utilité.\n\n • **/add_role** : (Réservé au Staff) Ajouter un rôle à un membre.\n • **/ban** : (Réservé au Staff) Banni un membre.\n • **/bonjour** : Dit bonjour dans le salon où la commande est exécutée.\n • **/delete_role** : (Réservé au Staff) Supprimer le rôle d'un membre.\n • **/dm** : (Réservé au Staff) Envoyer un message privé avec le bot à un membre du serveur.\n • **/facture** : Créer une nouvelle facture.\n • **/kick** : (Réservé au Staff) Permet d'exclure un membre du serveur.\n • **/ping** : Permet de connaître le ping entre vous et le bot.\n • **/say** : (Réservé au Staff) Permet d'envoyer un message à l'aide du bot.\n • **/service** : Permet de connaître le nombre de personnes en service.\n • **/service_clear** : (Réservé au Staf) Permet de nettoyer le salon des PDS et FDS.\n • **/unban** : (Réservé au Staff) Permet de débannir un joueur\n • **{prefix}Help** : (Réservé au Staff) Permet de créer l'embed Aide dans le salon où est executé la commande\n • **{prefix}recrutement** : (Réservé au Staff) Permet de créer l'embed pour les recrutements\n • **{prefix}pds_fds** : (Réservé au Staff) Permet de créer l'embed pour les prises et fin de service\n • **{prefix}recrutement_on** : (Réservé au Staff) Permet de rendre possible le dépot de CV sur l'embed recrutement\n • **{prefix}recrutement_off** : (Réservé au Staff) Permet de ne plus rendre accessible le dépot de CV sur l'embed recrutement", color=main_color)
+    embed = discord.Embed(description=f"Bienvenu sur la commande Aide, vous trouverez ici toutes les commandes ainsi que leur fonctionnement et utilité.\n\n__Commandes Slash :__\n • **/add_role** : (Réservé au Staff) Ajouter un rôle à un membre.\n • **/ban** : (Réservé au Staff) Banni un membre.\n • **/delete_role** : (Réservé au Staff) Supprimer le rôle d'un membre.\n • **/dm** : (Réservé au Staff) Envoyer un message privé avec le bot à un membre du serveur.\n • **/facture** : (Si activée par l'administrateur) Créer une nouvelle facture.\n • **/kick** : (Réservé au Staff) Permet d'exclure un membre du serveur.\n • **/ping** : Permet de connaître le ping entre vous et le bot.\n • **/say** : (Réservé au Staff) Permet d'envoyer un message à l'aide du bot.\n • **/service_clear** : (Réservé au Staff) Permet de nettoyer le salon des PDS et FDS.\n • **/unban** : (Réservé au Staff) Permet de débannir un joueur\n\n__Commandes préfix :__\n • **{prefix}Help** : (Réservé au Staff) Permet de créer l'embed Aide dans le salon où est executé la commande\n • **{prefix}recrutement** : (Réservé au Staff) Permet de créer l'embed pour les recrutements\n • **{prefix}pds_fds** : (Réservé au Staff) Permet de créer l'embed pour les prises et fin de service\n • **{prefix}recrutement_on** : (Réservé au Staff) Permet de rendre possible le dépot de CV sur l'embed recrutement\n • **{prefix}recrutement_off** : (Réservé au Staff) Permet de ne plus rendre accessible le dépot de CV sur l'embed recrutement", color=main_color)
     embed.set_author(name="Commande Aide", icon_url=url_logo_entreprise)
     embed.set_footer(text=bot.user.name)
     await interaction.response.send_message(embed=embed)
@@ -109,10 +110,6 @@ async def ping(interaction: discord.Interaction):
     bot_latency = bot.latency * 1000
     embed = discord.Embed(description=f"✅ Le ping est de **{bot_latency:.1f}**ms", color=main_color)
     await interaction.response.send_message(embed=embed, ephemeral=True)
-
-@bot.tree.command(name='bonjour', description="Dire bonjour.")
-async def bonjour(interaction: discord.Interaction):
-    await interaction.response.send_message(f"{interaction.user.mention} dis bonjour ! 👋", ephemeral=False)
 
 @bot.tree.command(name='service_clear', description="Effacer le salon des PDS / FDS.")
 async def effacer(interaction: discord.Interaction):
@@ -224,14 +221,15 @@ async def service(interaction: discord.Interaction):
 @discord.app_commands.describe(facturation = "Prix de la facture.")
 @discord.app_commands.describe(photo_url = "URL de la capture de la facture.") 
 async def service(interaction: discord.Interaction, facturation: str, photo_url: str = None):
-    guild = interaction.guild
-    channel = discord.utils.get(guild.channels, name=channel_facture)
-    embed = discord.Embed(title="Factures", description=f"Une nouvelle facture a été déposée !", color=0x4bf542)
-    embed.add_field(name="Auteur", value=f"{interaction.user.mention}")
-    embed.add_field(name="Montant", value=f"{facturation}$")
-    embed.set_image(url=photo_url)
-    await channel.send(embed=embed)
-    await interaction.response.send_message("Votre facture a bien été prise en compte !", ephemeral=True)
+    if not channel_facture == '':
+        guild = interaction.guild
+        channel = discord.utils.get(guild.channels, name=channel_facture)
+        embed = discord.Embed(title="Factures", description=f"Une nouvelle facture a été déposée !", color=0x4bf542)
+        embed.add_field(name="Auteur", value=f"{interaction.user.mention}")
+        embed.add_field(name="Montant", value=f"{facturation}$")
+        embed.set_image(url=photo_url)
+        await channel.send(embed=embed)
+        await interaction.response.send_message("Votre facture a bien été prise en compte !", ephemeral=True)
 
 # Commande discussion DM
 
@@ -356,7 +354,8 @@ class Aide(discord.ui.View):
 
     @discord.ui.button(label="❔ - Besoin d'aide", style=discord.ButtonStyle.grey, custom_id="aide")
     async def button2(self, interaction: discord.Interaction, button: discord.ui.Button):
-        channel = await interaction.guild.create_text_channel(f"❔・{interaction.user.name}-Aide")
+        position = discord.utils.get(interaction.guild.categories, name=help_cat)
+        channel = await interaction.guild.create_text_channel(f"❔・{interaction.user.name}-Aide", category=position)
         role = discord.utils.get(interaction.guild.roles, name=name_staff)
         await channel.set_permissions(interaction.user, read_messages=True, send_messages=True)
         await channel.set_permissions(interaction.guild.default_role, read_messages=False, send_messages=False)

@@ -13,10 +13,9 @@ ban_color = couleur_des_embeds_de_bannissement
 unban_color = couleurs_des_embeds_de_débannissement
 role_client = "role_client_du_serveur"
 channel_pds_fds = "salons_des_status_des_pds_fds"
-channel_airport_arrival = "salon_d'annonce_arrivee_membre"
-channel_airport_departure = "salon_d'annonce_depart_membre"
-channel_facture = "salon_des_factures"
-espacesperso_cat = "salon_de_la_categorie_espace_perso"
+channel_airport_arrival = "salon_d'annonce_arrivee_membre" (Optionnel : Si non utilisé laisser vide)
+channel_airport_departure = "salon_d'annonce_depart_membre" (Optionnel : Si non utilisé laisser vide)
+channel_facture = "salon_des_factures" (Optionnel : Si non utilisé laisser vide)
 name_staff = "nom_role_staff"
 candid_cat = "nom_categorie_candidature"
 help_cat = "nom_categorie_candidature"
@@ -26,6 +25,7 @@ url_image_entreprise = "une image représentant l'entreprise"
 url_logo_entreprise = "le logo de l'entreprises" 
 prefix = "le prefix que vous souhaitez"
 role_recrutement = "nom du rôle du responsable recrutement"
+presence = "message_de_presence_que_vous_souhaitez_afficher_dans_le_statut_du_bot"
 ```
 Ainsi que d'installer les dépendances avec :
 ```
@@ -38,13 +38,11 @@ Le préfix est ? et il est modifiable dès le début du code. Il est représent�
     - Commande BAN (restrinte au administrateurs) -> /ban
     - Commande Kick (restrinte au administrateurs) -> /Kick
     - Commande d'ajout de rôle pour un membre -> /add_role
-    - Commande qui fait dire bonjour au bot -> /bonjour
     - Commande de suppression de rôle pour un membre -> /delete_role
     - Commande DM (restrinte au administrateurs) -> /dm
     - Commande Facture -> /facture
     - Commande ping -> /ping
     - Commande say -> /say
-    - Commande service -> /service
     - Commande de suppression des anciens service / nettoyage du salon PDS / FDS -> /service_clear
 
 ### Commandes classiques (utilisé pour les embed avec boutons) : 
