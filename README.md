@@ -29,7 +29,7 @@ presence = "message_de_presence_que_vous_souhaitez_afficher_dans_le_statut_du_bo
 ```
 Ainsi que d'installer les dépendances avec :
 ```
-pip install discord.py pytz datetime asyncio discord-timestamps json
+pip install discord.py pytz datetime asyncio discord-timestamps
 ```
 ## Ses fonctionnalitées : 
 Le préfix est ? et il est modifiable dès le début du code. Il est représenté par la suite avec [prefix].
